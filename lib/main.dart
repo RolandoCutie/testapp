@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: 'login',
       routes: GetAplicationRoutes(),
-      theme: ThemeData(primaryColor: HexColor('#2094AD')
+      theme: ThemeData(primaryColor: HexColor('##2094AD')
       ),
     ));
   }

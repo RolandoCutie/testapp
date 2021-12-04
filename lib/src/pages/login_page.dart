@@ -3,9 +3,14 @@
 import 'package:flutter/material.dart';
 import 'package:testapp/src/blocs/login_bloc.dart';
 import 'package:testapp/src/blocs/provider.dart';
+import 'package:testapp/src/providers/user_provider.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  
+
+  final usuarioProvider = UserProvider();
+
+  LoginPage({Key? key}) : super(key: key);
 
   //Todo:build de la pagina
   @override
@@ -46,7 +51,7 @@ class LoginPage extends StatelessWidget {
             width: double.infinity,
           ),
           Text(
-            "TestAPP",
+            "TaskAPP",
             style: TextStyle(
                 fontSize: 25.0,
                 color: Colors.white,
