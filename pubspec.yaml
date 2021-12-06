@@ -46,8 +46,15 @@ dependencies:
   
   mime_type: ^1.0.0
 
- 
+  shared_preferences:
+    2.0.0-nullsafety.1
 
+  multiselect: ^0.0.4
+
+  multi_select_item: ^1.0.3
+
+  multi_select_flutter: ^4.0.0
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -3,7 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:testapp/src/blocs/provider.dart';
 import 'package:testapp/src/models/task_model.dart';
+import 'package:testapp/src/preferences/userloged.dart';
 import 'package:testapp/src/providers/task_provider.dart';
+
+
 
 class TaskNewsPage extends StatelessWidget {
   TaskNewsPage({Key? key}) : super(key: key);
@@ -11,8 +14,7 @@ class TaskNewsPage extends StatelessWidget {
   final taskprovider = TasksProviders();
   @override
   Widget build(BuildContext context) {
-    final bloc = Provider.of(context);
-
+  
     return Scaffold(
       appBar: AppBar(
         title: Text('TaskAPP'),
@@ -23,9 +25,10 @@ class TaskNewsPage extends StatelessWidget {
     //floatingActionButton: _crearBoton(context),
   }
 
+
   Widget _crearListado() {
     return FutureBuilder(
-      future: taskprovider.obtenerTareas("Nueva"),
+      future: taskprovider.obtenerTareasNuevas(),
       builder: (BuildContext context, AsyncSnapshot<List<TaskModel>> snapshot) {
         if (snapshot.hasData) {
           final tasks = snapshot.data;
@@ -33,7 +36,8 @@ class TaskNewsPage extends StatelessWidget {
             itemCount: tasks!.length,
             itemBuilder: (context, i) => _crearItem(context, tasks[i]),
           );
-        } else {
+        } 
+        else {
           return Center(
             child: CircularProgressIndicator(),
           );
@@ -72,5 +76,6 @@ class TaskNewsPage extends StatelessWidget {
           onTap: () =>
               Navigator.pushNamed(context, 'task_detail', arguments: task),
         ));
+        
   }
 }

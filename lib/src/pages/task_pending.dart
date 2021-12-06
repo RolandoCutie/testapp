@@ -25,7 +25,7 @@ class TaskPendingPage extends StatelessWidget {
 
   Widget _crearListado() {
     return FutureBuilder(
-      future: taskprovider.obtenerTareas("Abierta"),
+      future: taskprovider.obtenerTareasPendientes(),
       builder: (BuildContext context, AsyncSnapshot<List<TaskModel>> snapshot) {
         if (snapshot.hasData) {
           final tasks = snapshot.data;

@@ -345,6 +345,8 @@ class _TaskCreatePageState extends State<TaskCreatePage> {
 
     task.state = "Nueva";
 
+    task.responsables = ["1"];
+
     //TODO:Aqui debo preguntar id del autor que esta creando esta task para mandarlo
 
     task.autor = "1";

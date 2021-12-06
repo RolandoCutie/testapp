@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:testapp/src/pages/home_page.dart';
 import 'package:testapp/src/pages/home_page1.dart';
 import 'package:testapp/src/pages/login_page.dart';
+import 'package:testapp/src/pages/member_creation.dart';
 import 'package:testapp/src/pages/task_create_page.dart';
 import 'package:testapp/src/pages/task_detail.dart';
 import 'package:testapp/src/pages/task_ended.dart';
@@ -18,5 +19,6 @@ Map<String, WidgetBuilder> GetAplicationRoutes() {
     'task_create_page': (BuildContext context) => TaskCreatePage(),
     'task_detail': (BuildContext context) => TaskDetailPage(),
     'tasks_news_page': (BuildContext context) => TaskNewsPage(),
+    'member_creation': (BuildContext context) => MemberCreatePage(),
   };
 }

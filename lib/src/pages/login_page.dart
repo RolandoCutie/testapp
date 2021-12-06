@@ -3,11 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:testapp/src/blocs/login_bloc.dart';
 import 'package:testapp/src/blocs/provider.dart';
+import 'package:testapp/src/preferences/userloged.dart';
 import 'package:testapp/src/providers/user_provider.dart';
 
 class LoginPage extends StatelessWidget {
-  
-
   final usuarioProvider = UserProvider();
 
   LoginPage({Key? key}) : super(key: key);
@@ -42,7 +41,7 @@ class LoginPage extends StatelessWidget {
       child: Column(
         children: <Widget>[
           Icon(
-            Icons.thumbs_up_down_rounded,
+            Icons.task,
             color: Colors.white,
             size: 100.0,
           ),
@@ -210,7 +209,35 @@ class LoginPage extends StatelessWidget {
     }
   }
 
-  _login(LoginBloc bloc, BuildContext context) {
-    Navigator.pushReplacementNamed(context, 'home');
+  _login(LoginBloc bloc, BuildContext context) async {
+    Map info = await usuarioProvider.login(bloc.email, bloc.password);
+
+    if (info['ok']) {
+
+      final prefs1 = UserLoged();
+
+      await prefs1.initPrefs();
+
+      
+      Navigator.pushReplacementNamed(context, 'home');
+    } else {
+      _mostrarAlerta(context, info['token']);
+    }
+  }
+
+  void _mostrarAlerta(BuildContext context, String message) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Informacion incorrecta'),
+            content: Text(message),
+            actions: <Widget>[
+              FlatButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text('Ok'))
+            ],
+          );
+        });
   }
 }
