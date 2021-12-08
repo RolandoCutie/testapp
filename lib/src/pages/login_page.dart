@@ -35,37 +35,30 @@ class LoginPage extends StatelessWidget {
       height: size.height * 0.4,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor,
+        color: Colors.blue,
       ),
     );
 
-    final logo = Container(
-      padding: EdgeInsets.only(top: 50),
-      child: Column(
-        children: <Widget>[
-          Icon(
-            Icons.task,
-            color: Colors.white,
-            size: 100.0,
-          ),
-          SizedBox(
-            height: 10.0,
-            width: double.infinity,
-          ),
-          Text(
-            "TaskAPP",
-            style: TextStyle(
-                fontSize: 25.0,
-                color: Colors.white,
-                fontWeight: FontWeight.bold),
-          ),
-        ],
+    final logo = Hero(
+      tag: 'home',
+      child: Container(
+        height: size.height * 0.59,
+        width: size.width,
+        decoration: BoxDecoration(
+          color: Theme.of(context).primaryColor,
+        ),
+        child: Image.asset(
+          'assets/PNG/HOME BLUE 1.png',
+          fit: BoxFit.cover,
+          height: 143,
+          width: 143,
+        ),
       ),
     );
 
     return Stack(
       children: <Widget>[
-        fondo,
+        //fondo,
         logo,
       ],
     );
@@ -84,7 +77,7 @@ class LoginPage extends StatelessWidget {
         children: <Widget>[
           SafeArea(
               child: Container(
-            height: zize.height * 0.23,
+            height: zize.height * 0.28,
           )),
           Container(
             width: zize.width * 0.85,

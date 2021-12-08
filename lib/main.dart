@@ -6,6 +6,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:testapp/src/api/notifications.dart';
 import 'package:testapp/src/blocs/provider.dart';
 import 'package:testapp/src/models/user_model.dart';
+import 'package:testapp/src/pages/splash_screen.dart';
 import 'package:testapp/src/preferences/user_preferences.dart';
 import 'package:testapp/src/preferences/userloged.dart';
 import 'package:testapp/src/providers/user_provider.dart';
@@ -24,7 +25,7 @@ void main() async {
 }
 
 class MyApp extends StatefulWidget {
-  MyApp({Key? key}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -55,7 +56,8 @@ class _MyAppState extends State<MyApp> {
         child: MaterialApp(
       title: 'Material App',
       debugShowCheckedModeBanner: false,
-      initialRoute: 'login',
+      initialRoute: 'splash',
+      home: SplashScreenPage(),
       routes: GetAplicationRoutes(),
       theme: ThemeData(primaryColor: HexColor('##2094AD')),
     ));

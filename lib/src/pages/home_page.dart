@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, unnecessary_new
 
 import 'package:flutter/material.dart';
 import 'package:testapp/src/blocs/provider.dart';
@@ -20,56 +20,67 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final usuariologeado = UserLoged();
+   
 
     return Scaffold(
       body: _callPage(currentIndex),
-      bottomNavigationBar: _botton(),
+      bottomNavigationBar: _botton1(),
     );
   }
 
   Widget _callPage(int paginaActual) {
     switch (paginaActual) {
       case 0:
-        return HomePage1();
-      case 1:
         return TaskNewsPage();
-      case 2:
+      case 1:
         return TaskPendingPage();
-      case 3:
+      case 2:
         return TaskEndedPage();
       default:
-        return HomePage1();
+        return TaskNewsPage();
     }
   }
 
-  Widget _botton() {
-    return BottomNavigationBar(
-      showSelectedLabels: false,
-      showUnselectedLabels: false,
-      type: BottomNavigationBarType.fixed,
-
-      backgroundColor: Theme.of(context).primaryColor,
-      elevation: 12,
-      iconSize: 30,
-      selectedItemColor: Colors.white,
-      
-
-      currentIndex: currentIndex,
-      // ignore: prefer_const_literals_to_create_immutables
-      items: [
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
-        BottomNavigationBarItem(icon: Icon(Icons.task), label: 'Nuevas '),
-        BottomNavigationBarItem(
-            icon: Icon(Icons.pending_actions_outlined), label: 'En proceso'),
-        BottomNavigationBarItem(
-            icon: Icon(Icons.task_alt_outlined), label: 'Finalizadas'),
-      ],
-      onTap: (index) {
+ 
+  Widget buildnavBar(String iconoactivo, String icononoactivo, int index) {
+    return GestureDetector(
+      onTap: () {
         setState(() {
           currentIndex = index;
         });
       },
+      child: Container(
+        height: 60,
+        decoration: BoxDecoration(
+          color: index == currentIndex
+              ? Colors.white
+              : Theme.of(context).primaryColor,
+        ),
+        width: MediaQuery.of(context).size.width / 3,
+        child: Center(
+            child: index == currentIndex
+                ? Image.asset(
+                    iconoactivo,
+                    height: 45,
+                    width: 35,
+                  )
+                : Image.asset(
+                    icononoactivo,
+                    height: 45,
+                    width: 35,
+                  )),
+      ),
     );
+  }
+
+  _botton1() {
+    return Row(children: <Widget>[
+      buildnavBar("assets/PNG/Opcion 2 AZUL_NEW.png",
+          "assets/PNG/Opcion 2 BLANCO_NEW.png", 0),
+      buildnavBar("assets/PNG/Opcion 2 AZUL_PENDING.png",
+          "assets/PNG/Opcion 2 BLANCO_PENDING.png", 1),
+      buildnavBar("assets/PNG/Opcion 2 AZUL_ENDED.png",
+          "assets/PNG/Opcion 2 BLANCO_ENDED.png", 2),
+    ]);
   }
 }
