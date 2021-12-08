@@ -2,22 +2,23 @@
 
 import 'package:flutter/material.dart';
 import 'package:testapp/src/blocs/provider.dart';
+import 'package:testapp/src/blocs/tasks_bloc.dart';
 import 'package:testapp/src/models/task_model.dart';
-import 'package:testapp/src/preferences/userloged.dart';
 import 'package:testapp/src/providers/task_provider.dart';
-
-
 
 class TaskNewsPage extends StatelessWidget {
   TaskNewsPage({Key? key}) : super(key: key);
 
   final taskprovider = TasksProviders();
+
   @override
   Widget build(BuildContext context) {
-  
+    final taskbloc = Provider.of1(context);
+    taskbloc.cargarTasksNuevas();
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('TaskAPP'),
+        title: Text('Nuevas'),
         backgroundColor: Theme.of(context).primaryColor,
       ),
       body: _crearListado(),
@@ -25,19 +26,23 @@ class TaskNewsPage extends StatelessWidget {
     //floatingActionButton: _crearBoton(context),
   }
 
-
   Widget _crearListado() {
     return FutureBuilder(
       future: taskprovider.obtenerTareasNuevas(),
       builder: (BuildContext context, AsyncSnapshot<List<TaskModel>> snapshot) {
         if (snapshot.hasData) {
           final tasks = snapshot.data;
-          return ListView.builder(
-            itemCount: tasks!.length,
-            itemBuilder: (context, i) => _crearItem(context, tasks[i]),
-          );
-        } 
-        else {
+          if (tasks!.isNotEmpty) {
+            return ListView.builder(
+              itemCount: tasks.length,
+              itemBuilder: (context, i) => _crearItem(context, tasks[i], i),
+            );
+          } else {
+            return Center(
+              child: Text('No hay tareas nuevas'),
+            );
+          }
+        } else {
           return Center(
             child: CircularProgressIndicator(),
           );
@@ -46,36 +51,44 @@ class TaskNewsPage extends StatelessWidget {
     );
   }
 
-  Widget _crearItem(BuildContext context, TaskModel task) {
+  Widget _crearItem(BuildContext context, TaskModel task, int i) {
+    final size = MediaQuery.of(context).size;
     return Container(
-        height: 90.0,
-        margin: EdgeInsets.only(left: 26.0, right: 26.0, top: 20.0),
-        decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor,
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(18.0),
-            boxShadow: const <BoxShadow>[
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 10.0,
-                offset: Offset(0.0, 10.0),
-              ),
-            ]),
-        child: ListTile(
-          title: Text(
-            task.title,
-            style: TextStyle(color: Colors.white),
-          ),
-          subtitle: Text(
-            "Descripcion:${task.description}",
-            style: TextStyle(color: Colors.white),
-          ),
-          leading: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          onTap: () =>
-              Navigator.pushNamed(context, 'task_detail', arguments: task),
-        ));
-        
+      margin: EdgeInsets.only(
+        top: size.height * 0.01,
+        right: size.width * 0.05,
+        left: size.width * 0.05,
+      ),
+      child: Card(
+          elevation: 5.0,
+          color: Theme.of(context).primaryColor,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    child: Text(
+                      (i + 1).toString(),
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                  title: Text(
+                    task.title,
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Text(
+                    task.type!,
+                    style: TextStyle(fontSize: 14, color: Colors.white),
+                  ),
+                  onTap: () => Navigator.pushNamed(context, 'task_detail',
+                      arguments: task)),
+            ],
+          )),
+    );
   }
 }

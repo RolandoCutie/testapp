@@ -10,12 +10,14 @@ import 'package:testapp/src/pages/task_pending.dart';
 import 'package:testapp/src/pages/tasks_news_page.dart';
 
 Map<String, WidgetBuilder> GetAplicationRoutes() {
+
+  
   return {
     'login': (BuildContext context) => LoginPage(),
-    'home': (BuildContext context) => HomePage(),
+    'home': (BuildContext context) => HomePage1(),
     'task_pending': (BuildContext context) => TaskPendingPage(),
     'task_ended': (BuildContext context) => TaskEndedPage(),
-    'home_page1': (BuildContext context) => HomePage1(),
+    'home_page1': (BuildContext context) => HomePage(),
     'task_create_page': (BuildContext context) => TaskCreatePage(),
     'task_detail': (BuildContext context) => TaskDetailPage(),
     'tasks_news_page': (BuildContext context) => TaskNewsPage(),

@@ -51,6 +51,27 @@ class TasksProviders {
     return true;
   }
 
+
+  Future<List<TaskModel>> obtenerTareas() async {
+    final usuariologeado = UserLoged();
+
+    final url = '$_url/tasks.json';
+
+    final resp = await http.get(Uri.parse(url));
+
+    final Map<String, dynamic> decodeData = json.decode(resp.body);
+    final List<TaskModel> tasks = [];
+
+    decodeData.forEach((id, task) {
+      final taskTemp = TaskModel.fromJson(task);
+
+      taskTemp.id = id;
+      tasks.add(taskTemp);
+      
+    });
+    return tasks;
+  }
+
   Future<List<TaskModel>> obtenerTareasNuevas() async {
     final usuariologeado = UserLoged();
 
@@ -66,8 +87,7 @@ class TasksProviders {
 
       taskTemp.id = id;
 
-      if (usuariologeado.type == 'managergeneral' ||
-          usuariologeado.type == 'managerequipo') {
+      if (usuariologeado.type == 'managerequipo') {
         if ("Nueva" == taskTemp.state) {
           tasks.add(taskTemp);
         }

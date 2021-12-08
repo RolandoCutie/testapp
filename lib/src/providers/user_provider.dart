@@ -112,6 +112,8 @@ class UserProvider {
     return tasks;
   }
 
+  
+
   /*Future<UserModel> getLogedUser() async {
     final response = await userprovider.obtenerUsuario();
     return response;

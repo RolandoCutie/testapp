@@ -2,11 +2,12 @@
 import 'package:flutter/material.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:multiselect/multiselect.dart';
+import 'package:testapp/src/blocs/provider.dart';
+import 'package:testapp/src/blocs/tasks_bloc.dart';
 import 'package:testapp/src/models/task_model.dart';
 import 'package:testapp/src/models/user_model.dart';
 import 'package:testapp/src/preferences/userloged.dart';
 
-import 'package:testapp/src/providers/task_provider.dart';
 import 'package:testapp/src/providers/user_provider.dart';
 
 enum EnumType { onat, inventario, alquiler, compraproducto, transporte }
@@ -26,8 +27,9 @@ class TaskDetailPage extends StatefulWidget {
 
 class _TaskDetailPageState extends State<TaskDetailPage> {
   final formKey = GlobalKey<FormState>();
-  final taskProvider = TasksProviders();
+
   final UserProvider userprovider = UserProvider();
+  late TaskBloc bloc;
 
   final usuariologeado = UserLoged();
 
@@ -41,6 +43,7 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    bloc = Provider.of1(context);
     final taskdata = ModalRoute.of(context)?.settings.arguments;
     if (taskdata != null) {
       task = taskdata as TaskModel;
@@ -49,70 +52,69 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: Text('TaskAPP'),
+        title: Text('Detalles'),
         backgroundColor: Theme.of(context).primaryColor,
       ),
       body: SingleChildScrollView(
-          child: Container(
-        height: size.height,
-        padding: EdgeInsets.only(
-          left: 25.0,
-          right: 25.0,
-          top: 5,
-        ),
+          child: SizedBox(
+        height: size.height + 120,
+        width: size.width,
         child: Form(
             key: formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 SizedBox(
-                  height: 20,
+                  height: size.height * 0.02,
                 ),
-                _createDetails(),
+                _createDetails(size),
                 SizedBox(
-                  height: 20,
+                  height: size.height * 0.02,
                 ),
                 if (usuariologeado.type == 'managerequipo' &&
                     task.state == "Nueva") ...[
-                  FutureBuilder(
-                      future: userprovider.obtenerUsuarios(),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<List<UserModel>> snapshot) {
-                        if (snapshot.hasData) {
-                          final _items = snapshot.data!
-                              .map((animal) => MultiSelectItem<UserModel>(
-                                  animal, animal.name))
-                              .toList();
-
-                          return MultiSelectBottomSheetField(
-                            initialChildSize: 0.4,
-                            listType: MultiSelectListType.CHIP,
-                            searchable: true,
-                            buttonText: Text("Seleccionar Miembros"),
-                            title: Text("Miembros"),
-                            items: _items,
-                            onConfirm: (values) {
-                              selected = values;
-                            },
-                            chipDisplay: MultiSelectChipDisplay(
-                              onTap: (value) {
-                                setState(() {
-                                  selected.remove(value);
-                                });
-                              },
-                            ),
-                          );
-                        }
-                        {
-                          return Text('no hay miembros');
-                        }
-                      }),
                   SizedBox(
-                    height: 20,
+                    width: size.width,
+                    child: FutureBuilder(
+                        future: userprovider.obtenerUsuarios(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<List<UserModel>> snapshot) {
+                          if (snapshot.hasData) {
+                            final _items = snapshot.data!
+                                .map((animal) => MultiSelectItem<UserModel>(
+                                    animal, animal.name))
+                                .toList();
+
+                            return MultiSelectBottomSheetField(
+                              initialChildSize: 0.4,
+                              listType: MultiSelectListType.CHIP,
+                              searchable: true,
+                              buttonText: Text("Seleccionar Miembros"),
+                              title: Text("Miembros"),
+                              items: _items,
+                              onConfirm: (values) {
+                                selected = values;
+                              },
+                              chipDisplay: MultiSelectChipDisplay(
+                                onTap: (value) {
+                                  setState(() {
+                                    selected.remove(value);
+                                  });
+                                },
+                              ),
+                            );
+                          }
+                          {
+                            return Text('no hay miembros');
+                          }
+                        }),
+                  ),
+                  SizedBox(
+                    height: size.height * 0.02,
                   ),
                   botton(context),
                   SizedBox(
-                    height: 20,
+                    height: size.height * 0.02,
                   ),
                 ]
 
@@ -125,7 +127,6 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
                     task.responsables!.contains(usuariologeado.localId)) ...[
                   botton2(context),
                 ],
-
               ],
             )),
       )),
@@ -139,7 +140,7 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
         child: Text(
-          "Acept Task",
+          "Aceptar tarea",
           style: TextStyle(fontSize: 14),
         ),
       ),
@@ -158,7 +159,7 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
         child: Text(
-          "Begin Task",
+          "Aceptar tarea",
           style: TextStyle(fontSize: 14),
         ),
       ),
@@ -177,7 +178,7 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
         child: Text(
-          "End Task",
+          "Terminar tarea",
           style: TextStyle(fontSize: 14),
         ),
       ),
@@ -201,15 +202,15 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
           task.responsables!.add(item.localId);
         }
       }
-      bool f = await taskProvider.editTask(task);
-      if (f == true) {
-        Navigator.pop(context, 'home');
-        mostrarSnackBar("Tarea editada");
-      }
+      bloc.editarTasks(task);
+
+      mostrarSnackBar("Tarea editada");
+
+      Navigator.pop(context);
     } else {
-      mostrarSnackBar("No ha asignado ningun miembro de equipo");
+      mostrarSnackBar("No ha asignado ningún miembro de equipo");
     }
-  } 
+  }
 
   void _submit1() async {
     selected;
@@ -220,12 +221,11 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
       task.state = 'Cerrada';
     }
 
-    bool f = await taskProvider.editTask(task);
-    if (f == true) {
+    bloc.editarTasks(task);
 
-      Navigator.pop(context, 'home');
-      mostrarSnackBar("Tarea ${task.state}");
-    }
+    mostrarSnackBar("Tarea ${task.state}");
+
+    Navigator.pop(context);
   }
 
   void mostrarSnackBar(String mensaje) {
@@ -244,14 +244,32 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
       );
     });
   }
-  _createDetails() {
+
+  _createDetails(Size size) {
     return Container(
+      
+      margin: EdgeInsets.only(
+        left: size.width * 0.10,
+        right: size.width * 0.05,
+      ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          
           Text(
-            'Tarea Asignada',
+             task.title,
+            style: TextStyle(
+              fontSize: 26.0,
+              color: Colors.black,
+              fontStyle: FontStyle.normal,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(
+            height: size.height * 0.02,
+          ),
+          Text(
+            'Descripción: ' + task.description,
             style: TextStyle(
               fontSize: 16.0,
               color: Colors.black,
@@ -260,10 +278,10 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
             ),
           ),
           SizedBox(
-            height: 23,
+            height: size.height * 0.02,
           ),
           Text(
-            'Titulo:' + task.title,
+            'Tipo: ' + task.type!,
             style: TextStyle(
               fontSize: 16.0,
               color: Colors.black,
@@ -272,34 +290,10 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
             ),
           ),
           SizedBox(
-            height: 23,
+            height: size.height * 0.02,
           ),
           Text(
-            'Descripcion:' + task.description,
-            style: TextStyle(
-              fontSize: 16.0,
-              color: Colors.black,
-              fontStyle: FontStyle.normal,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(
-            height: 23,
-          ),
-          Text(
-            'Tipo:' + task.type!,
-            style: TextStyle(
-              fontSize: 16.0,
-              color: Colors.black,
-              fontStyle: FontStyle.normal,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(
-            height: 23,
-          ),
-          Text(
-            'Fecha de Cumplimiento:' +
+            'Fecha de cumplimiento: ' +
                 task.date!.day.toString() +
                 '-' +
                 task.date!.month.toString() +
@@ -313,10 +307,51 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
             ),
           ),
           SizedBox(
-            height: 23,
+            height: size.height * 0.02,
+          ),
+          if (task.autor!.isNotEmpty) ...[
+            FutureBuilder(
+              future: userprovider.obtenerUsuarios(),
+              initialData: const [],
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData) {
+                  //List<UserModel> users = snapshot.data;
+                  List<String> nombredeusuarios = [];
+
+                  for (UserModel user in snapshot.data) {
+                    if (task.autor!.contains(user.localId)) {
+                      nombredeusuarios.add(user.name);
+                    }
+                  }
+
+                  return Text(
+                    'Autor: ' + nombredeusuarios.toString(),
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.black,
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                } else {
+                  return Text(
+                    'No tiene autor asignado todavia',
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.black,
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                }
+              },
+            )
+          ],
+          SizedBox(
+            height: size.height * 0.02,
           ),
           Text(
-            'Author:' + task.autor!,
+            'Proyecto: ' + task.proyect!,
             style: TextStyle(
               fontSize: 16.0,
               color: Colors.black,
@@ -325,10 +360,10 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
             ),
           ),
           SizedBox(
-            height: 23,
+            height: size.height * 0.02,
           ),
           Text(
-            'Proyecto:' + task.proyect!,
+            'Estado de la tarea: ' + task.state,
             style: TextStyle(
               fontSize: 16.0,
               color: Colors.black,
@@ -337,17 +372,46 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
             ),
           ),
           SizedBox(
-            height: 23,
+            height: size.height * 0.02,
           ),
-          Text(
-            'Estado de la tarea:' + task.state,
-            style: TextStyle(
-              fontSize: 16.0,
-              color: Colors.black,
-              fontStyle: FontStyle.normal,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          if (task.responsables!.isNotEmpty) ...[
+            FutureBuilder(
+              future: userprovider.obtenerUsuarios(),
+              initialData: const [],
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData) {
+                  //List<UserModel> users = snapshot.data;
+                  List<String> nombredeusuarios = [];
+
+                  for (UserModel user in snapshot.data) {
+                    if (task.responsables!.contains(user.localId)) {
+                      nombredeusuarios.add(user.name);
+                    }
+                  }
+
+                  return Text(
+                    'Responsables: ' + nombredeusuarios.toString(),
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.black,
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                } else {
+                  return Text(
+                    'No hay responsables asignados todavia',
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.black,
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                }
+              },
+            )
+          ],
         ],
       ),
     );

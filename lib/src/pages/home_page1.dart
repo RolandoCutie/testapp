@@ -1,6 +1,8 @@
 // ignore_for_file: deprecated_member_use, prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:testapp/src/api/notifications.dart';
+import 'package:testapp/src/blocs/provider.dart';
 import 'package:testapp/src/models/user_model.dart';
 import 'package:testapp/src/preferences/userloged.dart';
 import 'package:testapp/src/providers/user_provider.dart';
@@ -11,6 +13,7 @@ class HomePage1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final usuariologeado = UserLoged();
+    final size = MediaQuery.of(context).size;
 
     if (usuariologeado.type == 'managergeneral') {
       return Scaffold(
@@ -20,78 +23,40 @@ class HomePage1 extends StatelessWidget {
         ),
         body: Center(
           child: Container(
+            height: size.height,
+            width: size.width,
+            margin: EdgeInsets.only(
+                left: size.width * 0.05,
+                right: size.width * 0.05,
+                top: size.height * 0.05),
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Column(children: <Widget>[
-                    RaisedButton(
-                      color: Theme.of(context).primaryColor,
-                      onPressed: () {
-                        Navigator.pushNamed(context, 'member_creation');
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 20.0, vertical: 15.0),
-                        child: Text(
-                          "Add Worker",
-                          style: TextStyle(fontSize: 14),
-                        ),
+                  RaisedButton(
+                    color: Theme.of(context).primaryColor,
+                    onPressed: () {
+                      Navigator.pushNamed(context, 'task_create_page');
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 15.0),
+                      child: Text(
+                        "Crear tarea",
+                        style: TextStyle(fontSize: 14),
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      elevation: 22.0,
-                      textColor: Colors.white,
                     ),
-                    SizedBox(
-                      height: 20,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    RaisedButton(
-                      color: Theme.of(context).primaryColor,
-                      onPressed: () {},
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 20.0, vertical: 15.0),
-                        child: Text(
-                          "Create Team",
-                          style: TextStyle(fontSize: 14),
-                        ),
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      elevation: 22.0,
-                      textColor: Colors.white,
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    RaisedButton(
-                      color: Theme.of(context).primaryColor,
-                      onPressed: () {
-                        Navigator.pushNamed(context, 'task_create_page');
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 20.0, vertical: 15.0),
-                        child: Text(
-                          "Create Task",
-                          style: TextStyle(fontSize: 14),
-                        ),
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      elevation: 22.0,
-                      textColor: Colors.white,
-                    ),
-                  ]),
+                    elevation: 22.0,
+                    textColor: Colors.white,
+                  ),
                 ]),
           ),
         ),
         //floatingActionButton: _crearBoton(context),
       );
-    } else if (usuariologeado.type == 'managerequipo') {
+    } else if (usuariologeado.type == 'miembroequipo') {
       return Scaffold(
         appBar: AppBar(
           title: Text('TaskAPP'),
@@ -99,55 +64,49 @@ class HomePage1 extends StatelessWidget {
         ),
         body: Center(
           child: Container(
+            height: size.height,
+            width: size.width,
+            margin: EdgeInsets.only(
+                left: size.width * 0.05,
+                right: size.width * 0.05,
+                top: size.height * 0.05),
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Column(children: <Widget>[
-                    SizedBox(
-                      height: 20,
-                    ),
-                    RaisedButton(
-                      color: Theme.of(context).primaryColor,
-                      onPressed: () {
-                        Navigator.pushNamed(context, 'task_create_page');
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 20.0, vertical: 15.0),
-                        child: Text(
-                          "Create Task",
-                          style: TextStyle(fontSize: 14),
-                        ),
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      elevation: 22.0,
-                      textColor: Colors.white,
-                    ),
-                  ]),
+                  Text('Bienvenido' +
+                      usuariologeado.nombre +
+                      ' te esperan nuevas tareas que cumplir')
+                ]),
+          ),
+        ),
+        //floatingActionButton: _crearBoton(context),
+      );
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('TaskAPP'),
+          backgroundColor: Theme.of(context).primaryColor,
+        ),
+        body: Center(
+          child: Container(
+            height: size.height,
+            width: size.width,
+            margin: EdgeInsets.only(
+              left: size.width * 0.05,
+              right: size.width * 0.05,
+              top: size.height * 0.05,
+            ),
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text('Bienvenido ' +
+                      usuariologeado.nombre +
+                      ' te esperan nuevas tareas que asignar')
                 ]),
           ),
         ),
         //floatingActionButton: _crearBoton(context),
       );
     }
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('TaskAPP'),
-        backgroundColor: Theme.of(context).primaryColor,
-      ),
-      body: Center(
-        child: Container(
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                    'Bienvendio Miembro del Equipo te esperan nuevas tareas que cumplir')
-              ]),
-        ),
-      ),
-      //floatingActionButton: _crearBoton(context),
-    );
   }
 }

@@ -1,9 +1,12 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:testapp/src/api/notifications.dart';
 import 'package:testapp/src/blocs/login_bloc.dart';
 import 'package:testapp/src/blocs/provider.dart';
+import 'package:testapp/src/models/task_model.dart';
 import 'package:testapp/src/preferences/userloged.dart';
+import 'package:testapp/src/providers/task_provider.dart';
 import 'package:testapp/src/providers/user_provider.dart';
 
 class LoginPage extends StatelessWidget {
@@ -74,6 +77,8 @@ class LoginPage extends StatelessWidget {
 
     final zize = MediaQuery.of(context).size;
 
+    bool _showPasswords = false;
+
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
@@ -116,10 +121,6 @@ class LoginPage extends StatelessWidget {
               ],
             ),
           ),
-          TextButton(
-              onPressed: () =>
-                  Navigator.pushReplacementNamed(context, 'registro'),
-              child: Text('Crear una nueva cuenta')),
           SizedBox(
             height: 100.0,
           ),
@@ -156,6 +157,8 @@ class LoginPage extends StatelessWidget {
 
   //Todo:Aqui va lo de llenar los campos el del password
   Widget _crearPassword(LoginBloc bloc) {
+    bool _showPasswords = false;
+
     return StreamBuilder(
       stream: bloc.passwordStream,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -163,12 +166,13 @@ class LoginPage extends StatelessWidget {
         return Container(
             padding: EdgeInsets.symmetric(horizontal: 20),
             child: TextField(
-              obscureText: true,
+              obscureText: !_showPasswords,
               decoration: InputDecoration(
                 icon: Icon(
                   Icons.lock_outline,
                   color: Theme.of(context).primaryColor,
                 ),
+
                 labelText: 'Contraseña',
                 errorText: _validarerror(f, snapshot),
                 //counterText: snapshot.data
@@ -210,16 +214,25 @@ class LoginPage extends StatelessWidget {
   }
 
   _login(LoginBloc bloc, BuildContext context) async {
+    TasksProviders task = TasksProviders();
+
     Map info = await usuarioProvider.login(bloc.email, bloc.password);
 
     if (info['ok']) {
-
       final prefs1 = UserLoged();
 
       await prefs1.initPrefs();
 
-      
-      Navigator.pushReplacementNamed(context, 'home');
+      List<TaskModel> tareas = await task.obtenerTareasNuevas();
+
+      if (tareas.isNotEmpty) {
+        NotificationApi.showNotification(
+            title: 'Bienvenido',
+            body: 'Tiene ${tareas.length} nuevas tareas',
+            payload: 'dddd');
+      }
+
+      Navigator.pushReplacementNamed(context, 'home_page1');
     } else {
       _mostrarAlerta(context, info['token']);
     }

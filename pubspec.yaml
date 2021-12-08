@@ -55,6 +55,9 @@ dependencies:
 
   multi_select_flutter: ^4.0.0
   
+  flutter_local_notifications: ^6.1.0
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

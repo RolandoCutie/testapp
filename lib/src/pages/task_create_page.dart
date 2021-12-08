@@ -4,8 +4,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:testapp/src/blocs/provider.dart';
+import 'package:testapp/src/blocs/tasks_bloc.dart';
+
 import 'package:testapp/src/models/task_model.dart';
-import 'package:testapp/src/providers/task_provider.dart';
+import 'package:testapp/src/preferences/userloged.dart';
 
 enum EnumType { onat, inventario, alquiler, compraproducto, transporte }
 enum EnumProyect { proyecto1, proyecto2, proyeto3, proyecto4 }
@@ -25,7 +28,7 @@ class TaskCreatePage extends StatefulWidget {
 class _TaskCreatePageState extends State<TaskCreatePage> {
   final formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  final taskProvider = TasksProviders();
+  late TaskBloc bloc;
 
   TaskModel task = TaskModel();
 
@@ -34,47 +37,51 @@ class _TaskCreatePageState extends State<TaskCreatePage> {
   var dateController1;
   @override
   Widget build(BuildContext context) {
+    bloc = Provider.of1(context);
     final size = MediaQuery.of(context).size;
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        title: Text('TaskAPP'),
+        title: Text('Crear tarea'),
         backgroundColor: Theme.of(context).primaryColor,
       ),
       body: SingleChildScrollView(
           child: Container(
-        height: size.height,
-        padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 35, bottom: 12),
+        height: size.height + 140,
+        width: size.width,
+        padding: EdgeInsets.only(
+          left: size.width * 0.10,
+          right: size.width * 0.10,
+          //top: size.height * 0.10,
+        ),
         child: Form(
             key: formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 SizedBox(
-                  height: 20,
+                  height: size.height * 0.02,
                 ),
                 _createTitle(),
                 SizedBox(
-                  height: 20,
+                  height: size.height * 0.02,
                 ),
                 _createDescription(),
                 SizedBox(
-                  height: 20,
+                  height: size.height * 0.02,
                 ),
                 _createType(),
                 SizedBox(
-                  height: 20,
+                  height: size.height * 0.02,
                 ),
+                
+                _createProyect(),
                 SizedBox(
-                  height: 20,
+                  height: size.height * 0.02,
                 ),
                 _createDate(),
                 SizedBox(
-                  height: 20,
-                ),
-                _createProyect(),
-                SizedBox(
-                  height: 20,
+                  height: size.height * 0.02,
                 ),
                 botton(context)
               ],
@@ -89,33 +96,24 @@ class _TaskCreatePageState extends State<TaskCreatePage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Container(
-          child: Text(
-            'Titulo',
-            style: TextStyle(
-              fontSize: 16.0,
-              color: Colors.black,
-              fontStyle: FontStyle.normal,
-              fontWeight: FontWeight.bold,
-            ),
+          padding: EdgeInsets.all(10),
+          child: TextFormField(
+            onSaved: (value) => task.title = value!,
+            initialValue: task.title,
+            textCapitalization: TextCapitalization.sentences,
+            decoration: InputDecoration(
+                border: OutlineInputBorder(), labelText: 'Título'),
+            inputFormatters: [FilteringTextInputFormatter.singleLineFormatter],
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            keyboardType: TextInputType.text,
+            validator: (value) {
+              if (value == "") {
+                return 'Ingrese los datos';
+              } else {
+                return null;
+              }
+            },
           ),
-        ),
-        TextFormField(
-          onSaved: (value) => task.title = value!,
-          initialValue: task.title,
-          textCapitalization: TextCapitalization.sentences,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-          ),
-          inputFormatters: [FilteringTextInputFormatter.singleLineFormatter],
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          keyboardType: TextInputType.text,
-          validator: (value) {
-            if (value == "") {
-              return 'Ingrese los datos';
-            } else {
-              return null;
-            }
-          },
         ),
       ],
     );
@@ -127,33 +125,24 @@ class _TaskCreatePageState extends State<TaskCreatePage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Container(
-          child: Text(
-            'Descripcion',
-            style: TextStyle(
-              fontSize: 16.0,
-              color: Colors.black,
-              fontStyle: FontStyle.normal,
-              fontWeight: FontWeight.bold,
-            ),
+          padding: EdgeInsets.all(10),
+          child: TextFormField(
+            onSaved: (value) => task.description = value!,
+            initialValue: task.description,
+            textCapitalization: TextCapitalization.sentences,
+            decoration: InputDecoration(
+                border: OutlineInputBorder(), labelText: 'Descripción'),
+            inputFormatters: [FilteringTextInputFormatter.singleLineFormatter],
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            keyboardType: TextInputType.text,
+            validator: (value) {
+              if (value == "") {
+                return 'Ingrese los datos';
+              } else {
+                return null;
+              }
+            },
           ),
-        ),
-        TextFormField(
-          onSaved: (value) => task.description = value!,
-          initialValue: task.description,
-          textCapitalization: TextCapitalization.sentences,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-          ),
-          inputFormatters: [FilteringTextInputFormatter.singleLineFormatter],
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          keyboardType: TextInputType.text,
-          validator: (value) {
-            if (value == "") {
-              return 'Ingrese los datos';
-            } else {
-              return null;
-            }
-          },
         ),
       ],
     );
@@ -165,59 +154,51 @@ class _TaskCreatePageState extends State<TaskCreatePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
-            child: Text(
-              'Type',
-              style: TextStyle(
-                fontSize: 16.0,
-                color: Colors.black,
-                fontStyle: FontStyle.normal,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          DropdownButtonFormField<String>(
-            //value: task.type,
-            // value: exp_month.toString(),
-            onChanged: (value) {},
+              padding: EdgeInsets.all(10),
+              child: DropdownButtonFormField<String>(
+                //value: task.type,
+                // value: exp_month.toString(),
+                onChanged: (value) {},
 
-            onSaved: (value) => task.type = value!,
-            validator: (value) {
-              if (value == "") {
-                return 'Ingrese los datos';
-              } else {
-                return null;
-              }
-            },
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.zero,
-              filled: false,
-              fillColor: Colors.red,
-              border: OutlineInputBorder(),
-            ),
-            // ignore: prefer_const_literals_to_create_immutables
-            items: [
-              DropdownMenuItem(
-                child: Text('ONAT'),
-                value: "ONAT",
-              ),
-              DropdownMenuItem(
-                child: Text('Inventario'),
-                value: "Inventario",
-              ),
-              DropdownMenuItem(
-                child: Text('Alquiler'),
-                value: "Alquiler",
-              ),
-              DropdownMenuItem(
-                child: Text('Compra producto'),
-                value: "Compra producto",
-              ),
-              DropdownMenuItem(
-                child: Text('Transporte'),
-                value: "Transporte",
-              ),
-            ],
-          )
+                onSaved: (value) => task.type = value!,
+                validator: (value) {
+                  if (value == "") {
+                    return 'Ingrese los datos';
+                  } else {
+                    return null;
+                  }
+                },
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Tipo',
+                  contentPadding: EdgeInsets.all(10),
+                  filled: false,
+                  fillColor: Colors.red,
+                ),
+                // ignore: prefer_const_literals_to_create_immutables
+                items: [
+                  DropdownMenuItem(
+                    child: Text('ONAT'),
+                    value: "ONAT",
+                  ),
+                  DropdownMenuItem(
+                    child: Text('Inventario'),
+                    value: "Inventario",
+                  ),
+                  DropdownMenuItem(
+                    child: Text('Alquiler'),
+                    value: "Alquiler",
+                  ),
+                  DropdownMenuItem(
+                    child: Text('Compra producto'),
+                    value: "Compra producto",
+                  ),
+                  DropdownMenuItem(
+                    child: Text('Transporte'),
+                    value: "Transporte",
+                  ),
+                ],
+              ))
         ]);
   }
 
@@ -227,54 +208,46 @@ class _TaskCreatePageState extends State<TaskCreatePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
-            child: Text(
-              'Proyecto',
-              style: TextStyle(
-                fontSize: 16.0,
-                color: Colors.black,
-                fontStyle: FontStyle.normal,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          DropdownButtonFormField<String>(
-            //value: task.proyect,
-            onChanged: (value) {},
+              padding: EdgeInsets.all(10),
+              child: DropdownButtonFormField<String>(
+                //value: task.proyect,
+                onChanged: (value) {},
 
-            onSaved: (value) => task.proyect = value!,
-            validator: (value) {
-              if (value == "") {
-                return 'Ingrese los datos';
-              } else {
-                return null;
-              }
-            },
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.zero,
-              filled: false,
-              fillColor: Colors.red,
-              border: OutlineInputBorder(),
-            ),
-            // ignore: prefer_const_literals_to_create_immutables
-            items: [
-              DropdownMenuItem(
-                child: Text('Proyecto 1'),
-                value: "Proyecto 1",
-              ),
-              DropdownMenuItem(
-                child: Text('Proyecto 2'),
-                value: "Proyecto 2",
-              ),
-              DropdownMenuItem(
-                child: Text('Proyecto 3'),
-                value: "Proyecto 3",
-              ),
-              DropdownMenuItem(
-                child: Text('Proyecto 4'),
-                value: "Proyecto 4",
-              ),
-            ],
-          )
+                onSaved: (value) => task.proyect = value!,
+                validator: (value) {
+                  if (value == "") {
+                    return 'Ingrese los datos';
+                  } else {
+                    return null;
+                  }
+                },
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Proyecto',
+                  contentPadding: EdgeInsets.all(10),
+                  filled: false,
+                  fillColor: Colors.red,
+                ),
+                // ignore: prefer_const_literals_to_create_immutables
+                items: [
+                  DropdownMenuItem(
+                    child: Text('Proyecto 1'),
+                    value: "Proyecto 1",
+                  ),
+                  DropdownMenuItem(
+                    child: Text('Proyecto 2'),
+                    value: "Proyecto 2",
+                  ),
+                  DropdownMenuItem(
+                    child: Text('Proyecto 3'),
+                    value: "Proyecto 3",
+                  ),
+                  DropdownMenuItem(
+                    child: Text('Proyecto 4'),
+                    value: "Proyecto 4",
+                  ),
+                ],
+              ))
         ]);
   }
 
@@ -285,7 +258,7 @@ class _TaskCreatePageState extends State<TaskCreatePage> {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
         child: Text(
-          "Create Task",
+          "Crear tarea",
           style: TextStyle(fontSize: 14),
         ),
       ),
@@ -299,35 +272,26 @@ class _TaskCreatePageState extends State<TaskCreatePage> {
 
   _createDate() {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Container(
-          child: Text(
-            'Date',
-            style: TextStyle(
-              fontSize: 16.0,
-              color: Colors.black,
-              fontStyle: FontStyle.normal,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        RaisedButton(
-          color: Theme.of(context).primaryColor,
-          onPressed: callDatePicker,
-          child: Container(
-            child: Text(
-              "Select Date",
-              style: TextStyle(fontSize: 14),
-            ),
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          elevation: 22.0,
-          textColor: Colors.white,
-        )
+            padding: EdgeInsets.all(10),
+            child: RaisedButton(
+              color: Theme.of(context).primaryColor,
+              onPressed: callDatePicker,
+              child: Container(
+                child: Text(
+                  "Seleccionar fecha",
+                  style: TextStyle(fontSize: 14),
+                ),
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              elevation: 22.0,
+              textColor: Colors.white,
+            ))
       ],
     );
   }
@@ -336,7 +300,7 @@ class _TaskCreatePageState extends State<TaskCreatePage> {
     if (!formKey.currentState!.validate()) {
       return;
     }
-
+    final usuariologeado = UserLoged();
     formKey.currentState!.save();
 
     print('Todo ok');
@@ -349,14 +313,13 @@ class _TaskCreatePageState extends State<TaskCreatePage> {
 
     //TODO:Aqui debo preguntar id del autor que esta creando esta task para mandarlo
 
-    task.autor = "1";
+    task.autor = usuariologeado.localId;
 
-    final f = await taskProvider.createTask(task);
+    bloc.agregarTasks(task);
 
-    if (f == true) {
-      Navigator.pop(context, 'home');
-      mostrarSnackBar("Tarea creada");
-    }
+    mostrarSnackBar("Tarea creada");
+
+    Navigator.pop(context);
   }
 
   void mostrarSnackBar(String mensaje) {
