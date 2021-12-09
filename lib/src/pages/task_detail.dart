@@ -57,7 +57,7 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
       ),
       body: SingleChildScrollView(
           child: SizedBox(
-        height: size.height + 170,
+        height: size.height + 220,
         width: size.width,
         child: Form(
             key: formKey,
@@ -140,7 +140,7 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
         child: Text(
-          "Aceptar tarea",
+          "Enviar tarea",
           style: TextStyle(fontSize: 14),
         ),
       ),
@@ -259,7 +259,7 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
           Text(
              task.title,
             style: TextStyle(
-              fontSize: 20.0,
+              fontSize: 18.0,
               color: Colors.black,
               fontStyle: FontStyle.normal,
               fontWeight: FontWeight.bold,
