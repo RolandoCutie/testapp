@@ -11,18 +11,16 @@ class TasksProviders {
   final _prefs = PreferenciasUsuarios();
 
   Future<bool> createTask(TaskModel task) async {
-
     final url = '$_url/tasks.json';
 
     final response =
-    await http.post(Uri.parse(url), body: taskModelToJson(task));
+        await http.post(Uri.parse(url), body: taskModelToJson(task));
 
     final decodeData = json.decode(response.body);
 
     print(decodeData);
 
     return true;
-
   }
 
   Future<bool> editTask(TaskModel task) async {
@@ -51,7 +49,6 @@ class TasksProviders {
     return true;
   }
 
-
   Future<List<TaskModel>> obtenerTareas() async {
     final usuariologeado = UserLoged();
 
@@ -67,7 +64,6 @@ class TasksProviders {
 
       taskTemp.id = id;
       tasks.add(taskTemp);
-      
     });
     return tasks;
   }
@@ -87,11 +83,17 @@ class TasksProviders {
 
       taskTemp.id = id;
 
-      if (usuariologeado.type == 'managergeneral' ||
-          usuariologeado.type == 'managerequipo') {
+      if (usuariologeado.type == 'managergeneral') {
+        if ("Nueva" == taskTemp.state) {
           tasks.add(taskTemp);
         }
-       else if (usuariologeado.type == 'miembroequipo') {
+      }
+      if (usuariologeado.type == 'managerequipo') {
+        if ("Nueva" == taskTemp.state) {
+          tasks.add(taskTemp);
+        }
+        tasks.add(taskTemp);
+      } else if (usuariologeado.type == 'miembroequipo') {
         if ("Abierta" == taskTemp.state &&
             taskTemp.responsables!.contains(usuariologeado.localId)) {
           tasks.add(taskTemp);
@@ -130,7 +132,6 @@ class TasksProviders {
     });
     return tasks;
   }
-
 
   Future<List<TaskModel>> obtenerTareasFinalizadas() async {
     final usuariologeado = UserLoged();

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:testapp/src/blocs/provider.dart';
 import 'package:testapp/src/blocs/tasks_bloc.dart';
 import 'package:testapp/src/models/task_model.dart';
+import 'package:testapp/src/preferences/userloged.dart';
 import 'package:testapp/src/providers/task_provider.dart';
 
 class TaskEndedPage extends StatelessWidget {
@@ -12,14 +13,35 @@ class TaskEndedPage extends StatelessWidget {
     final taskbloc = Provider.of1(context);
     taskbloc.cargarTasksFinalizadas();
     final bloc = Provider.of(context);
+    final usuariologeado = UserLoged();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Finalizadas'),
-        backgroundColor: Theme.of(context).primaryColor,
-      ),
-      body: _crearListado(),
-    );
+    if (usuariologeado.type == 'managergeneral') {
+      return Scaffold(
+        appBar: AppBar(
+          actions: [
+            IconButton(
+                onPressed: () {
+                  {
+                    Navigator.pushNamed(context, 'task_create_page');
+                  }
+                },
+                icon: Icon(Icons.add_task))
+          ],
+          title: Text('Finalizadas'),
+          backgroundColor: Theme.of(context).primaryColor,
+        ),
+        body: _crearListado(),
+      );
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Finalizadas'),
+          backgroundColor: Theme.of(context).primaryColor,
+        ),
+        body: _crearListado(),
+      );
+    }
+
     //floatingActionButton: _crearBoton(context),
   }
 

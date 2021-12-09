@@ -31,7 +31,7 @@ class TaskNewsPage extends StatelessWidget {
                 },
                 icon: Icon(Icons.add_task))
           ],
-          title: Text('Nuevas'),
+          title: Text('Enviadas'),
           backgroundColor: Theme.of(context).primaryColor,
         ),
         body: _crearListado(),
