@@ -74,7 +74,6 @@ class _TaskCreatePageState extends State<TaskCreatePage> {
                 SizedBox(
                   height: size.height * 0.02,
                 ),
-                
                 _createProyect(),
                 SizedBox(
                   height: size.height * 0.02,
@@ -301,7 +300,6 @@ class _TaskCreatePageState extends State<TaskCreatePage> {
       return;
     }
     final usuariologeado = UserLoged();
-    formKey.currentState!.save();
 
     print('Todo ok');
     print(task.proyect);
@@ -314,7 +312,8 @@ class _TaskCreatePageState extends State<TaskCreatePage> {
     //TODO:Aqui debo preguntar id del autor que esta creando esta task para mandarlo
 
     task.autor = usuariologeado.localId;
-
+    formKey.currentState!.save();
+    
     bloc.agregarTasks(task);
 
     mostrarSnackBar("Tarea creada");

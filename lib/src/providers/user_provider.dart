@@ -111,6 +111,27 @@ class UserProvider {
 
     return tasks;
   }
+   Future<List<UserModel>> obtenerUsuarios1() async {
+    final url = '$_url/User.json';
+
+    final resp = await http.get(Uri.parse(url));
+
+    final Map<String, dynamic> decodeData = json.decode(resp.body);
+
+    UserModel task1 = UserModel();
+
+    List<UserModel> tasks = [];
+
+    decodeData.forEach((id, task) {
+      final taskTemp = UserModel.fromJson(task);
+
+      taskTemp.id = id;
+
+      tasks.add(taskTemp);
+    });
+
+    return tasks;
+  }
 
   
 

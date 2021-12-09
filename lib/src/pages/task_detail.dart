@@ -57,7 +57,7 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
       ),
       body: SingleChildScrollView(
           child: SizedBox(
-        height: size.height + 120,
+        height: size.height + 170,
         width: size.width,
         child: Form(
             key: formKey,
@@ -74,7 +74,7 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
                 if (usuariologeado.type == 'managerequipo' &&
                     task.state == "Nueva") ...[
                   SizedBox(
-                    width: size.width,
+                    width: size.width * 0.90,
                     child: FutureBuilder(
                         future: userprovider.obtenerUsuarios(),
                         builder: (BuildContext context,
@@ -259,7 +259,7 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
           Text(
              task.title,
             style: TextStyle(
-              fontSize: 26.0,
+              fontSize: 20.0,
               color: Colors.black,
               fontStyle: FontStyle.normal,
               fontWeight: FontWeight.bold,
@@ -311,7 +311,7 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
           ),
           if (task.autor!.isNotEmpty) ...[
             FutureBuilder(
-              future: userprovider.obtenerUsuarios(),
+              future: userprovider.obtenerUsuarios1(),
               initialData: const [],
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 if (snapshot.hasData) {

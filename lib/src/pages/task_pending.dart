@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:testapp/src/blocs/provider.dart';
 import 'package:testapp/src/blocs/tasks_bloc.dart';
 import 'package:testapp/src/models/task_model.dart';
+import 'package:testapp/src/preferences/userloged.dart';
 import 'package:testapp/src/providers/task_provider.dart';
 
 class TaskPendingPage extends StatelessWidget {
@@ -15,15 +16,37 @@ class TaskPendingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final taskbloc = Provider.of1(context);
     taskbloc.cargarTasksPendientes();
+    final usuariologeado = UserLoged();
     final bloc = Provider.of(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Pendientes'),
-        backgroundColor: Theme.of(context).primaryColor,
-      ),
-      body: _crearListado(),
-    );
+    if (usuariologeado.type == 'managergeneral') {
+      return Scaffold(
+        appBar: AppBar(
+          actions: [
+            IconButton(
+              
+                onPressed: () {
+                  {
+                    Navigator.pushNamed(context, 'task_create_page');
+                  }
+                },
+                icon: Icon(Icons.add_task))
+          ],
+          title: Text('Pendientes'),
+          backgroundColor: Theme.of(context).primaryColor,
+        ),
+        body: _crearListado(),
+      );
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Pendientes'),
+          backgroundColor: Theme.of(context).primaryColor,
+        ),
+        body: _crearListado(),
+      );
+    }
+
     //floatingActionButton: _crearBoton(context),
   }
 

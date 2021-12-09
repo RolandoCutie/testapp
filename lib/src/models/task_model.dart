@@ -39,13 +39,15 @@ class TaskModel {
     this.proyect,
   });
 
-  factory TaskModel.fromJson(Map<String, dynamic> json) => TaskModel(
-        id: json["id"] ,
-        title: json["title"] == null ? '' : json["title"],
+   factory TaskModel.fromJson(Map<String, dynamic> json) => TaskModel(
+        id: json["id"],
+        title: json["title"] == null ? null : json["title"],
         description: json["description"] == null ? null : json["description"],
         type: json["type"] == null ? null : json["type"],
         date: json["date"] == null ? null : DateTime.parse(json["date"]),
-        responsables: List<String>.from(json["responsables"].map((x) => x)),
+        responsables: json["responsables"] == null
+            ? null
+            : List<String>.from(json["responsables"].map((x) => x)),
         autor: json["autor"] == null ? null : json["autor"],
         state: json["state"] == null ? null : json["state"],
         proyect: json["proyect"] == null ? null : json["proyect"],

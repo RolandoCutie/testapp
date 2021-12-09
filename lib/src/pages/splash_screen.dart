@@ -33,7 +33,7 @@ class _SplashScreenState extends State<SplashScreenPage> {
         ),
         child: Image.asset(
           'assets/PNG/HOME BLUE 1.png',
-          fit: BoxFit.fill,
+          fit: BoxFit.cover,
           height: 150,
           width: 144,
         ),

@@ -76,7 +76,10 @@ class _HomePageState extends State<HomePage> {
   _botton1() {
     return Row(children: <Widget>[
       buildnavBar("assets/PNG/Opcion 2 AZUL_NEW.png",
-          "assets/PNG/Opcion 2 BLANCO_NEW.png", 0),
+
+          "assets/PNG/Opcion 2 BLANCO_NEW.png",
+          
+           0),
       buildnavBar("assets/PNG/Opcion 2 AZUL_PENDING.png",
           "assets/PNG/Opcion 2 BLANCO_PENDING.png", 1),
       buildnavBar("assets/PNG/Opcion 2 AZUL_ENDED.png",

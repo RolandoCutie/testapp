@@ -213,16 +213,17 @@ class LoginPage extends StatelessWidget {
 
     if (info['ok']) {
       final prefs1 = UserLoged();
-
+      
       await prefs1.initPrefs();
+      if (prefs1.type == 'managerequipo' || prefs1.type == 'miembroequipo') {
+        List<TaskModel> tareas = await task.obtenerTareasNuevas();
 
-      List<TaskModel> tareas = await task.obtenerTareasNuevas();
-
-      if (tareas.isNotEmpty) {
-        NotificationApi.showNotification(
-            title: 'Bienvenido',
-            body: 'Tiene ${tareas.length} nuevas tareas',
-            payload: 'dddd');
+        if (tareas.isNotEmpty) {
+          NotificationApi.showNotification(
+              title: 'Bienvenido',
+              body: 'Tiene ${tareas.length} nuevas tareas',
+              payload: 'dddd');
+        }
       }
 
       Navigator.pushReplacementNamed(context, 'home_page1');
