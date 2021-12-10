@@ -88,11 +88,10 @@ class TasksProviders {
           tasks.add(taskTemp);
         }
       }
-      if (usuariologeado.type == 'managerequipo') {
+       else if (usuariologeado.type == 'managerequipo') {
         if ("Nueva" == taskTemp.state) {
           tasks.add(taskTemp);
         }
-        tasks.add(taskTemp);
       } else if (usuariologeado.type == 'miembroequipo') {
         if ("Abierta" == taskTemp.state &&
             taskTemp.responsables!.contains(usuariologeado.localId)) {

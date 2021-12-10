@@ -47,7 +47,7 @@ dependencies:
   mime_type: ^1.0.0
 
   shared_preferences:
-    2.0.0-nullsafety.1
+    2.0.10
 
   multiselect: ^0.0.4
 
